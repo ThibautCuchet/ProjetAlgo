@@ -17,7 +17,7 @@ public class SAXHandler extends DefaultHandler {
   public void startElement(String uri, String localName, String qName, Attributes attributes)
       throws SAXException {
     if(qName.equalsIgnoreCase("country")) {
-      country = new Country(attributes.getValue("name"), attributes.getValue("cca3"));
+      country = new Country(attributes.getValue("name"), attributes.getValue("cca3"), Integer.parseInt(attributes.getValue("population")));
       graph.addCountry(country.getCca3(), country);
     }
     if(qName.equalsIgnoreCase("border")) {

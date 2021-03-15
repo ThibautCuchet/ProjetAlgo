@@ -11,8 +11,8 @@ public class Main {
 			SAXHandler userhandler = new SAXHandler();
 			saxParser.parse(inputFile, userhandler);
 			Graph g = userhandler.getGraph();
-			g.calculerItineraireMinimisantNombreDeFrontieres("JPN", "ARG", "output.xml");
-			//g.calculerItineraireMinimisantPopulationTotale("BEL", "IND", "output2.xml");
+			//g.calculerItineraireMinimisantNombreDeFrontieres("ARG", "IND", "output.xml");
+			g.calculerItineraireMinimisantPopulationTotale("ARG", "IND", "output2.xml");
 
 		} catch (Exception e) {
 			e.printStackTrace();

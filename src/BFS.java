@@ -1,23 +1,29 @@
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 
 public class BFS {
 
-  private Queue<BFSNode> queue;
+  private Queue<Node> queue;
   private Set<Country> added;
-  private BFSNode root;
-  private BFSNode destNode;
+  private Node root;
+  private Node destNode;
   private HashMap<String, Country> countries;
+
+  private class Node {
+    private Country country;
+    private Node parent;
+
+    Node(Country country, Node parent) {
+      this.country = country;
+      this.parent = parent;
+    }
+  }
 
   public BFS(String cca3, HashMap<String, Country> countries) {
     queue = new LinkedList<>();
     added = new HashSet<>();
 
     Country startCountry = countries.get(cca3);
-    root = new BFSNode(startCountry, null);
+    root = new Node(startCountry, null);
     queue.add(root);
     added.add(startCountry);
     this.countries = countries;
@@ -26,12 +32,12 @@ public class BFS {
   public Queue<Country> getShortestWay(String cca3) {
     boolean isArrived = false;
     try {
-      BFSNode currentNode = queue.poll();
+      Node currentNode = queue.poll();
       while (!isArrived) {
-        for (String border : currentNode.getCountry().getBorders()) {
+        System.out.println(currentNode.country.getCca3());
+        for (String border : currentNode.country.getBorders()) {
           if (!this.added.contains(this.countries.get(border))) {
-            BFSNode child = new BFSNode(this.countries.get(border), currentNode);
-            currentNode.addChildren(child);
+            Node child = new Node(this.countries.get(border), currentNode);
             queue.add(child);
             if (border.equalsIgnoreCase(cca3)) {
               isArrived = true;
@@ -39,6 +45,7 @@ public class BFS {
             }
           }
         }
+        added.add(currentNode.country);
         currentNode = queue.poll();
       }
 
@@ -46,13 +53,13 @@ public class BFS {
       throw new IllegalArgumentException("It's impossible to join these countries");
     }
     Queue<Country> countryQueue = new LinkedList<>();
-    BFSNode currentNode = destNode;
+    Node currentNode = destNode;
 
-    while (currentNode.getParent() != null) {
-      countryQueue.add(currentNode.getCountry());
-      currentNode = currentNode.getParent();
+    while (currentNode.parent!= null) {
+      countryQueue.add(currentNode.country);
+      currentNode = currentNode.parent;
     }
-    countryQueue.add(currentNode.getCountry());
+    countryQueue.add(currentNode.country);
     return countryQueue;
   }
 }

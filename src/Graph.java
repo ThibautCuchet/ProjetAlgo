@@ -34,8 +34,19 @@ public class Graph {
   public void calculerItineraireMinimisantNombreDeFrontieres(String origin, String dest, String output) {
     BFS bfs = new BFS(origin, countries);
     LinkedList<Country> countryQueue = (LinkedList) bfs.getShortestWay(dest);
+    writeXML(countryQueue, origin, dest, output);
+  }
+
+  public void calculerItineraireMinimisantPopulationTotale(String origin, String dest, String out) {
+    Dijkastra dijkastra = new Dijkastra(origin, countries);
+    LinkedList<Country> countryQueue = (LinkedList) dijkastra.getLessPopulation(dest);
+    writeXML(countryQueue, origin, dest, out);
+
+  }
+
+  private void writeXML(LinkedList<Country> countryQueue, String origin, String dest, String output) {
     long sumPopulation = countryQueue.stream().map(Country::getPopulation).reduce(Long::sum).orElse(
-        (long) 0);
+            (long) 0);
 
     try {
       DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();

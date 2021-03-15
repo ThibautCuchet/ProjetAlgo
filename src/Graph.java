@@ -62,7 +62,7 @@ public class Graph {
       Element childElement;
       Country country;
       while (countryQueue.size() > 0) {
-        country = countryQueue.removeLast();
+        country = countryQueue.poll();
         childElement = document.createElement("pays");
         childElement.setAttribute("cca3", country.getCca3());
         childElement.setAttribute("nom", country.getName());

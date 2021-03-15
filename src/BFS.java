@@ -8,15 +8,6 @@ public class BFS {
   private Node destNode;
   private HashMap<String, Country> countries;
 
-  private class Node {
-    private Country country;
-    private Node parent;
-
-    Node(Country country, Node parent) {
-      this.country = country;
-      this.parent = parent;
-    }
-  }
 
   public BFS(String cca3, HashMap<String, Country> countries) {
     queue = new LinkedList<>();
@@ -34,32 +25,24 @@ public class BFS {
     try {
       Node currentNode = queue.poll();
       while (!isArrived) {
-        System.out.println(currentNode.country.getCca3());
-        for (String border : currentNode.country.getBorders()) {
+        for (String border : currentNode.getCountry().getBorders()) {
           if (!this.added.contains(this.countries.get(border))) {
             Node child = new Node(this.countries.get(border), currentNode);
             queue.add(child);
+            added.add(child.getCountry());
             if (border.equalsIgnoreCase(cca3)) {
               isArrived = true;
               destNode = child;
             }
           }
         }
-        added.add(currentNode.country);
         currentNode = queue.poll();
       }
 
     } catch (NullPointerException e) {
       throw new IllegalArgumentException("It's impossible to join these countries");
     }
-    Queue<Country> countryQueue = new LinkedList<>();
-    Node currentNode = destNode;
 
-    while (currentNode.parent!= null) {
-      countryQueue.add(currentNode.country);
-      currentNode = currentNode.parent;
-    }
-    countryQueue.add(currentNode.country);
-    return countryQueue;
+    return destNode.asLinkedList();
   }
 }

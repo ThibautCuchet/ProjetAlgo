@@ -3,21 +3,34 @@ import java.util.stream.Collectors;
 
 public class Dijkastra {
 
-    private class Node {
-        long count;
-        boolean finished;
-        String cca3;
-        Node parent;
+    private class DijkastraNode extends Node{
+        private long count;
+        private boolean finished;
 
-        Node(long count, boolean finished, String cca3, Node parent) {
+        DijkastraNode(long count, boolean finished,Country country, Node parent) {
+            super(country, parent);
             this.count = count;
             this.finished = finished;
-            this.cca3 = cca3;
-            this.parent = parent;
+        }
+
+        public long getCount() {
+            return count;
+        }
+
+        public boolean isFinished() {
+            return finished;
+        }
+
+        public void setFinished(boolean finished) {
+            this.finished = finished;
+        }
+
+        public void setCount(long count) {
+            this.count = count;
         }
     }
 
-    private HashMap<String, Node> sumPopulation;
+    private HashMap<String, DijkastraNode> sumPopulation;
     private HashMap<String, Country> countries;
 
 
@@ -25,31 +38,29 @@ public class Dijkastra {
         this.countries = countries;
 
         sumPopulation = new HashMap<>();
-        sumPopulation.put(cca3, new Node(countries.get(cca3).getPopulation(), false, cca3, null));
+        sumPopulation.put(cca3, new DijkastraNode(countries.get(cca3).getPopulation(), false, countries.get(cca3), null));
     }
 
     public Queue<Country> getLessPopulation(String cca3) {
-        Node node = null;
-        while (!(sumPopulation.containsKey(cca3) && sumPopulation.get(cca3).finished)) {
-            Country country = countries.get(sumPopulation.entrySet().stream().filter((i) -> !i.getValue().finished).min(Comparator.comparingLong(a -> a.getValue().count)).orElse(null).getKey());
-            node = sumPopulation.get(country.getCca3());
-            for (String border : country.getBorders().stream().filter(i -> !(sumPopulation.containsKey(i) && sumPopulation.get(i).finished)).collect(Collectors.toList())) {
-                if (sumPopulation.putIfAbsent(border, new Node(node.count + countries.get(border).getPopulation(), false, border, node)) != null) {
-                    if (node.count + countries.get(border).getPopulation() < sumPopulation.get(border).count) {
-                        sumPopulation.get(border).count = node.count + countries.get(border).getPopulation();
-                        sumPopulation.get(border).parent = node;
+        DijkastraNode node = null;
+
+        try {
+            while (!(sumPopulation.containsKey(cca3) && sumPopulation.get(cca3).isFinished())) {
+                Country country = countries.get(sumPopulation.entrySet().stream().filter((i) -> !i.getValue().finished).min(Comparator.comparingLong(a -> a.getValue().getCount())).orElse(null).getKey());
+                node = sumPopulation.get(country.getCca3());
+                for (String border : country.getBorders().stream().filter(i -> !(sumPopulation.containsKey(i) && sumPopulation.get(i).isFinished())).collect(Collectors.toList())) {
+                    if (sumPopulation.putIfAbsent(border, new DijkastraNode(node.getCount() + countries.get(border).getPopulation(), false, countries.get(border), node)) != null) {
+                        if (node.getCount() + countries.get(border).getPopulation() < sumPopulation.get(border).getCount()) {
+                            sumPopulation.get(border).setCount(node.getCount() + countries.get(border).getPopulation());
+                            sumPopulation.get(border).setParent(node);
+                        }
                     }
                 }
+                sumPopulation.get(country.getCca3()).finished = true;
             }
-            sumPopulation.get(country.getCca3()).finished = true;
+        } catch (Exception e) {
+            throw new IllegalArgumentException("It's impossible to join these countries");
         }
-
-        Queue<Country> queue = new LinkedList<>();
-        while (node != null) {
-            queue.add(countries.get(node.cca3));
-            node = node.parent;
-        }
-
-        return queue;
+        return node.asLinkedList();
     }
 }

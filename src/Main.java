@@ -14,10 +14,10 @@ public class Main {
 			SAXHandler userhandler = new SAXHandler();
 			saxParser.parse(inputFile, userhandler);
 			Graph g = userhandler.getGraph();
-			g.calculerItineraireMinimisantNombreDeFrontieres("DZA", "BFA", "output.xml");
-			g.calculerItineraireMinimisantPopulationTotale("DZA", "BFA", "output2.xml");
-			g.calculerItineraireMinimisantNombreDeFrontieresEtPopulation("DZA", "BFA", "output3.xml");
-
+			//g = DOMReader.getGraph("countries.xml");
+			g.calculerItineraireMinimisantNombreDeFrontieres("BEL", "IND", "output.xml");
+			g.calculerItineraireMinimisantPopulationTotale("BEL", "IND", "output2.xml");
+			g.calculerItineraireMinimisantNombreDeFrontieresEtPopulation("BEL", "IND", "output3.xml");
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(0);

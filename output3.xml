@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<itineraire arrivee="Burkina Faso" depart="Algeria"
-	nbPays="3" sommePopulation="70524796">
-	<pays cca3="DZA" nom="Algeria" population="37900000" />
-	<pays cca3="MLI" nom="Mali" population="15302000" />
-	<pays cca3="BFA" nom="Burkina Faso" population="17322796" />
+<!DOCTYPE itineraire SYSTEM "itineraire.dtd">
+<itineraire arrivee="India" depart="Belgium" nbPays="2" sommePopulation="1247845653">
+<pays cca3="BEL" nom="Belgium" population="11175653"/>
+<pays cca3="IND" nom="India" population="1236670000"/>
 </itineraire>

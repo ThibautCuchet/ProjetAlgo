@@ -61,18 +61,9 @@ public class Graph {
             (long) 0);
 
     try {
-
-
-
       DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
       DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
       Document document = documentBuilder.newDocument();
-
-      TransformerFactory transformerFactory = TransformerFactory.newInstance();
-      Transformer transformer = transformerFactory.newTransformer();
-      transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-      DOMImplementation domImplementation = document.getImplementation();
-      DocumentType documentType = domImplementation.createDocumentType("doctype", "country.dtd");
 
       Element rootElement = document.createElement("itineraire");
       rootElement.setAttribute("arrivee", this.countries.get(dest).getName());
@@ -94,6 +85,10 @@ public class Graph {
 
       TransformerFactory transformerFactory = TransformerFactory.newInstance();
       Transformer transformer = transformerFactory.newTransformer();
+      transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+      DOMImplementation domImplementation = document.getImplementation();
+      DocumentType documentType = domImplementation.createDocumentType("doctype","", "itineraire.dtd");
+      transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, documentType.getSystemId());
       DOMSource source = new DOMSource(document);
       StreamResult result = new StreamResult(new File(output));
       transformer.transform(source, result);

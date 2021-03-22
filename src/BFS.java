@@ -1,3 +1,4 @@
+package src;
 import java.util.*;
 
 public class BFS {
@@ -42,7 +43,6 @@ public class BFS {
     } catch (NullPointerException e) {
       throw new IllegalArgumentException("It's impossible to join these countries");
     }
-
     return destNode.asLinkedList();
   }
 }

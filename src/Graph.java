@@ -3,6 +3,7 @@ package src;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -12,9 +13,10 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Queue;
 
+import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
+import org.w3c.dom.DocumentType;
 import org.w3c.dom.Element;
 
 public class Graph {
@@ -25,8 +27,8 @@ public class Graph {
     countries = new HashMap<>();
   }
 
-  public Country addCountry(String cca3, Country country) {
-    return countries.put(cca3, country);
+  public void addCountry(String cca3, Country country) {
+    countries.put(cca3, country);
   }
 
   public HashMap<String, Country> getCountries() {
@@ -40,10 +42,18 @@ public class Graph {
   }
 
   public void calculerItineraireMinimisantPopulationTotale(String origin, String dest, String out) {
-    Dijkastra dijkastra = new Dijkastra(origin, countries);
-    LinkedList<Country> countryQueue = (LinkedList) dijkastra.getLessPopulation(dest);
-    writeXML(countryQueue, origin, dest, out);
+    executeDijkastra(origin, dest, out, false);
 
+  }
+  
+  public void calculerItineraireMinimisantNombreDeFrontieresEtPopulation(String origin, String dest, String out) {
+	  executeDijkastra(origin, dest, out, true);	
+  }
+  
+  private void executeDijkastra(String origin, String dest, String out, boolean withBorder) {
+	  Dijkastra dijkastra = new Dijkastra(origin, countries);
+	  LinkedList<Country> countryQueue = (LinkedList) dijkastra.getLessPopulation(dest, withBorder);
+	  writeXML(countryQueue, origin, dest, out);
   }
 
   private void writeXML(LinkedList<Country> countryQueue, String origin, String dest, String output) {
@@ -51,9 +61,19 @@ public class Graph {
             (long) 0);
 
     try {
+
+
+
       DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
       DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
       Document document = documentBuilder.newDocument();
+
+      TransformerFactory transformerFactory = TransformerFactory.newInstance();
+      Transformer transformer = transformerFactory.newTransformer();
+      transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+      DOMImplementation domImplementation = document.getImplementation();
+      DocumentType documentType = domImplementation.createDocumentType("doctype", "country.dtd");
+
       Element rootElement = document.createElement("itineraire");
       rootElement.setAttribute("arrivee", this.countries.get(dest).getName());
       rootElement.setAttribute("depart", this.countries.get(origin).getName());

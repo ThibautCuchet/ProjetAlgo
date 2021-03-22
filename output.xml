@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<itineraire arrivee="Burkina Faso" depart="Algeria"
+	nbPays="3" sommePopulation="72351872">
+	<pays cca3="DZA" nom="Algeria" population="37900000" />
+	<pays cca3="NER" nom="Niger" population="17129076" />
+	<pays cca3="BFA" nom="Burkina Faso" population="17322796" />
+</itineraire>

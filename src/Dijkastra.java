@@ -43,17 +43,21 @@ public class Dijkastra {
         sumPopulation.put(cca3, new DijkastraNode(countries.get(cca3).getPopulation(), false, countries.get(cca3), null));
     }
 
-    public Queue<Country> getLessPopulation(String cca3) {
+    public Queue<Country> getLessPopulation(String cca3, boolean lessBorder) {
         DijkastraNode node = null;
+        long weigthBorder = 0;
+        if(lessBorder) {
+        	weigthBorder = 5000000000L;
+        }
 
         try {
             while (!(sumPopulation.containsKey(cca3) && sumPopulation.get(cca3).isFinished())) {
                 Country country = countries.get(sumPopulation.entrySet().stream().filter((i) -> !i.getValue().finished).min(Comparator.comparingLong(a -> a.getValue().getCount())).orElse(null).getKey());
                 node = sumPopulation.get(country.getCca3());
                 for (String border : country.getBorders().stream().filter(i -> !(sumPopulation.containsKey(i) && sumPopulation.get(i).isFinished())).collect(Collectors.toList())) {
-                    if (sumPopulation.putIfAbsent(border, new DijkastraNode(node.getCount() + countries.get(border).getPopulation(), false, countries.get(border), node)) != null) {
-                        if (node.getCount() + countries.get(border).getPopulation() < sumPopulation.get(border).getCount()) {
-                            sumPopulation.get(border).setCount(node.getCount() + countries.get(border).getPopulation());
+                    if (sumPopulation.putIfAbsent(border, new DijkastraNode(node.getCount() + weigthBorder + countries.get(border).getPopulation(), false, countries.get(border), node)) != null) {
+                        if (node.getCount() + countries.get(border).getPopulation() + weigthBorder < sumPopulation.get(border).getCount()) {
+                            sumPopulation.get(border).setCount(node.getCount() + weigthBorder + countries.get(border).getPopulation());
                             sumPopulation.get(border).setParent(node);
                         }
                     }

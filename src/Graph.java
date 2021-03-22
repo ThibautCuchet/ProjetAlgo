@@ -40,10 +40,18 @@ public class Graph {
   }
 
   public void calculerItineraireMinimisantPopulationTotale(String origin, String dest, String out) {
-    Dijkastra dijkastra = new Dijkastra(origin, countries);
-    LinkedList<Country> countryQueue = (LinkedList) dijkastra.getLessPopulation(dest);
-    writeXML(countryQueue, origin, dest, out);
+    executeDijkastra(origin, dest, out, false);
 
+  }
+  
+  public void calculerItineraireMinimisantNombreDeFrontieresEtPopulation(String origin, String dest, String out) {
+	  executeDijkastra(origin, dest, out, true);	
+  }
+  
+  private void executeDijkastra(String origin, String dest, String out, boolean withBorder) {
+	  Dijkastra dijkastra = new Dijkastra(origin, countries);
+	  LinkedList<Country> countryQueue = (LinkedList) dijkastra.getLessPopulation(dest, withBorder);
+	  writeXML(countryQueue, origin, dest, out);
   }
 
   private void writeXML(LinkedList<Country> countryQueue, String origin, String dest, String output) {
